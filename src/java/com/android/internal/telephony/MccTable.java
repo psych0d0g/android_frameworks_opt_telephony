@@ -27,6 +27,7 @@ import android.os.SystemProperties;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
+import android.provider.Settings;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -305,10 +306,17 @@ public final class MccTable
     private static void setWifiCountryCodeFromMcc(Context context, int mcc) {
         String country = MccTable.countryCodeForMcc(mcc);
         if (!country.isEmpty()) {
-            Log.d(LOG_TAG, "WIFI_COUNTRY_CODE set to " + country);
-            WifiManager wM = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
-            //persist
-            wM.setCountryCode(country, true);
+        	// maxwen: dont override by default only if reset
+            String countryCode = Settings.Global.getString(context.getContentResolver(),
+                Settings.Global.WIFI_COUNTRY_CODE);
+            if(countryCode == null || countryCode.isEmpty()){
+            	Log.d(LOG_TAG, "country set from SIM to " + country);
+            	WifiManager wM = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+            	//persist
+            	wM.setCountryCode(country, true);
+            } else {
+            	Log.d(LOG_TAG, "use stored country code " + countryCode);
+            }
         }
     }
 
