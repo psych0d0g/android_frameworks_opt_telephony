@@ -25,12 +25,10 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SqliteWrapper;
 import android.net.Uri;
-import android.os.Environment;
 import android.telephony.SmsMessage;
 import android.text.TextUtils;
-import android.util.Log;
+import android.telephony.Rlog;
 import android.util.Patterns;
-
 
 import java.util.HashSet;
 import java.util.Set;
@@ -44,8 +42,6 @@ import java.util.regex.Pattern;
  */
 public final class Telephony {
     private static final String TAG = "Telephony";
-    private static final boolean DEBUG = true;
-    private static final boolean LOCAL_LOGV = false;
 
     // Constructor
     public Telephony() {
@@ -1243,7 +1239,6 @@ public final class Telephony {
      */
     public static final class Threads implements ThreadsColumns {
         private static final String[] ID_PROJECTION = { BaseColumns._ID };
-        private static final String STANDARD_ENCODING = "UTF-8";
         private static final Uri THREAD_ID_CONTENT_URI = Uri.parse(
                 "content://mms-sms/threadID");
         public static final Uri CONTENT_URI = Uri.withAppendedPath(
@@ -1293,7 +1288,7 @@ public final class Telephony {
             }
 
             Uri uri = uriBuilder.build();
-            //if (DEBUG) Log.v(TAG, "getOrCreateThreadId uri: " + uri);
+            //if (DEBUG) Rlog.v(TAG, "getOrCreateThreadId uri: " + uri);
 
             Cursor cursor = SqliteWrapper.query(context, context.getContentResolver(),
                     uri, ID_PROJECTION, null, null, null);
@@ -1302,14 +1297,14 @@ public final class Telephony {
                     if (cursor.moveToFirst()) {
                         return cursor.getLong(0);
                     } else {
-                        Log.e(TAG, "getOrCreateThreadId returned no rows!");
+                        Rlog.e(TAG, "getOrCreateThreadId returned no rows!");
                     }
                 } finally {
                     cursor.close();
                 }
             }
 
-            Log.e(TAG, "getOrCreateThreadId failed with uri " + uri.toString());
+            Rlog.e(TAG, "getOrCreateThreadId failed with uri " + uri.toString());
             throw new IllegalArgumentException("Unable to find or allocate a thread ID.");
         }
     }
@@ -1820,6 +1815,21 @@ public final class Telephony {
           * but currently only used for LTE(14) and EHRPD(13).
           */
         public static final String BEARER = "bearer";
+
+        /**
+          * MVNO type
+          * spn(Service Provider Name), imsi, gid(Group Identifier Level 1)
+          */
+        public static final String MVNO_TYPE = "mvno_type";
+
+        /**
+          * MVNO data
+          * Use the following examples.
+          * spn: A MOBILE, BEN NL, ...
+          * imsi: 302720x94, 2060188, ...
+          * gid: 4E, 33, ...
+          */
+        public static final String MVNO_MATCH_DATA = "mvno_match_data";
     }
 
     /**
@@ -1995,5 +2005,75 @@ public final class Telephony {
                 CMAS_URGENCY,
                 CMAS_CERTAINTY
         };
+    }
+
+    /**
+     * Contains phone numbers that are blacklisted
+     * for phone and/or message purposes.
+     * @hide
+     */
+    public static final class Blacklist implements BaseColumns {
+        /**
+         * The content:// style URL for this table
+         */
+        public static final Uri CONTENT_URI =
+                Uri.parse("content://blacklist");
+
+        /**
+         * The content:// style URL for filtering this table by number.
+         * When using this, make sure the number is correctly encoded
+         * when appended to the Uri.
+         */
+        public static final Uri CONTENT_FILTER_BYNUMBER_URI =
+                Uri.parse("content://blacklist/bynumber");
+
+        /**
+         * The content:// style URL for filtering this table on phone numbers
+         */
+        public static final Uri CONTENT_PHONE_URI =
+                Uri.parse("content://blacklist/phone");
+
+        /**
+         * The content:// style URL for filtering this table on message numbers
+         */
+        public static final Uri CONTENT_MESSAGE_URI =
+                Uri.parse("content://blacklist/message");
+
+        /**
+         * Query parameter used to match numbers by regular-expression like
+         * matching. Supported are the '*' and the '.' operators.
+         * <p>
+         * TYPE: boolean
+         */
+        public static final String REGEX_KEY = "regex";
+
+        /**
+         * The default sort order for this table
+         */
+        public static final String DEFAULT_SORT_ORDER = "number ASC";
+
+        /**
+         * The phone number as the user entered it.
+         * <P>Type: TEXT</P>
+         */
+        public static final String NUMBER = "number";
+
+        /**
+         * Whether the number contains a regular expression pattern
+         * <P>Type: BOOLEAN (read only)</P>
+         */
+        public static final String IS_REGEX = "is_regex";
+
+        /**
+         * Blacklisting mode for phone calls
+         * <P>Type: INTEGER (int)</P>
+         */
+        public static final String PHONE_MODE = "phone";
+
+        /**
+         * Blacklisting mode for messages
+         * <P>Type: INTEGER (int)</P>
+         */
+        public static final String MESSAGE_MODE = "message";
     }
 }

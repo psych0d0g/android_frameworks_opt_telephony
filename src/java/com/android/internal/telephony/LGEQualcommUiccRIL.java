@@ -24,9 +24,13 @@ import android.os.Parcel;
 import android.os.SystemProperties;
 import android.telephony.SignalStrength;
 import android.text.TextUtils;
-import android.util.Log;
+import android.telephony.Rlog;
 
 import java.util.ArrayList;
+
+import com.android.internal.telephony.uicc.IccCardApplicationStatus;
+import com.android.internal.telephony.uicc.IccCardStatus;
+import com.android.internal.telephony.dataconnection.DataCallResponse;
 
 /**
  * Custom Qualcomm No SimReady RIL for LGE using the latest Uicc stack
@@ -85,7 +89,7 @@ public class LGEQualcommUiccRIL extends QualcommSharedRIL implements CommandsInt
     @Override
     protected Object
     responseSetupDataCall(Parcel p) {
-        DataCallState dataCall;
+        DataCallResponse dataCall;
 
         boolean oldRil = needsOldRilFeature("datacall");
 
@@ -137,10 +141,10 @@ public class LGEQualcommUiccRIL extends QualcommSharedRIL implements CommandsInt
         int appIndex = -1;
         if (mPhoneType == RILConstants.CDMA_PHONE) {
             appIndex = status.mCdmaSubscriptionAppIndex;
-            Log.d(LOG_TAG, "This is a CDMA PHONE " + appIndex);
+            Rlog.d(RILJ_LOG_TAG, "This is a CDMA PHONE " + appIndex);
         } else {
             appIndex = status.mGsmUmtsSubscriptionAppIndex;
-            Log.d(LOG_TAG, "This is a GSM PHONE " + appIndex);
+            Rlog.d(RILJ_LOG_TAG, "This is a GSM PHONE " + appIndex);
         }
 
         if (numApplications > 0) {
@@ -152,7 +156,7 @@ public class LGEQualcommUiccRIL extends QualcommSharedRIL implements CommandsInt
 
             if (TextUtils.isEmpty(mAid))
                mAid = "";
-            Log.d(LOG_TAG, "mAid " + mAid);
+            Rlog.d(RILJ_LOG_TAG, "mAid " + mAid);
         }
 
         return status;
