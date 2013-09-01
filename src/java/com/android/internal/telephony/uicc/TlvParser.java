@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.internal.telephony;
+package com.android.internal.telephony.uicc;
 
 import java.util.ArrayList;
 import java.util.Arrays;

@@ -316,7 +316,7 @@ public final class MccTable
             	//persist
             	wM.setCountryCode(country, true);
             } else {
-            	Log.d(LOG_TAG, "use stored country code " + countryCode);
+            	Rlog.d(LOG_TAG, "use stored country code " + countryCode);
             }
         }
     }
