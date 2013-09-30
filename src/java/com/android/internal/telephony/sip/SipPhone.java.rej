@@ -1,0 +1,9 @@
+--- src/java/com/android/internal/telephony/sip/SipPhone.java
++++ src/java/com/android/internal/telephony/sip/SipPhone.java
+@@ -63,5 +63,5 @@
+     private SipProfile mProfile;
+ 
+-    SipPhone (Context context, PhoneNotifier notifier, SipProfile profile) {
++    public SipPhone (Context context, PhoneNotifier notifier, SipProfile profile) {
+         super("SIP:" + profile.getUriString(), context, notifier);
+ 

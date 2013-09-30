@@ -1,0 +1,16 @@
+--- src/java/com/android/internal/telephony/gsm/GSMPhone.java
++++ src/java/com/android/internal/telephony/gsm/GSMPhone.java
+@@ -364,5 +364,5 @@
+      * {@link com.android.internal.telephony.PhoneConstants.State}
+      */
+-    /*package*/ void notifyPhoneStateChanged() {
++    /*package*/ public void notifyPhoneStateChanged() {
+         mNotifier.notifyPhoneState(this);
+     }
+@@ -403,5 +403,5 @@
+ 
+     /*package*/
+-    void notifyLocationChanged() {
++    public void notifyLocationChanged() {
+         mNotifier.notifyCellLocation(this);
+     }

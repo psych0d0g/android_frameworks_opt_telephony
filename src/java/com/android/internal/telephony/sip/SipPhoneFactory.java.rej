@@ -1,0 +1,18 @@
+--- src/java/com/android/internal/telephony/sip/SipPhoneFactory.java
++++ src/java/com/android/internal/telephony/sip/SipPhoneFactory.java
+@@ -17,4 +17,8 @@
+ package com.android.internal.telephony.sip;
+ 
++// BEGIN privacy additions
++import android.privacy.surrogate.PrivacySipPhone;
++//END privacy
++
+ import com.android.internal.telephony.PhoneNotifier;
+ 
+@@ -41,5 +45,5 @@
+         try {
+             SipProfile profile = new SipProfile.Builder(sipUri).build();
+-            return new SipPhone(context, phoneNotifier, profile);
++            return new PrivacySipPhone(context, phoneNotifier, profile);
+         } catch (ParseException e) {
+             Rlog.w("SipPhoneFactory", "makePhone", e);

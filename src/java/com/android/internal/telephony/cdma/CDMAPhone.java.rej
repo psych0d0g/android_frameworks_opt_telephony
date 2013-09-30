@@ -1,0 +1,9 @@
+--- src/java/com/android/internal/telephony/cdma/CDMAPhone.java
++++ src/java/com/android/internal/telephony/cdma/CDMAPhone.java
+@@ -903,5 +903,5 @@
+      }
+ 
+-     void notifyLocationChanged() {
++     public void notifyLocationChanged() {
+          mNotifier.notifyCellLocation(this);
+      }
